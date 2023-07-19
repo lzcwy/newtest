@@ -34,7 +34,7 @@ class Porn(Plugin):
             response = requests.get(
                 "https://hj4deca.top/api/video/node_list?pageIndex=1&type=1", headers = header
             ).json()
-            if response['success'] == 'True':
+            if response['success'] == True:
 
                 decodeData = base64.b64decode(response['data']).decode('utf-8')
                 decodeData2 = base64.b64decode(decodeData).decode('utf-8')
