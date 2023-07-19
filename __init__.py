@@ -1,3 +1,3 @@
-from .tiktok import TikTok
+from .porn import Porn
 
-__all__ = ["TikTok"]
+__all__ = ["Porn"]

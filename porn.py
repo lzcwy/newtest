@@ -1,11 +1,12 @@
 import re
 import requests
 from plugins import register, Plugin, Event, logger, Reply, ReplyType
-
-
+import base64
+import json
+import random
 @register
-class TikTok(Plugin):
-    name = "tiktok"
+class Porn(Plugin):
+    name = "porn"
 
     def did_receive_message(self, event: Event):
         pass
@@ -20,18 +21,30 @@ class TikTok(Plugin):
         pass
 
     def help(self, **kwargs) -> str:
-        return "Use the command #tiktok(or whatever you like set with command field in the config) to get a wonderful video"
+        return "Use the command #porn(or whatever you like set with command field in the config) to get a wonderful video"
 
     def reply(self) -> Reply:
-        reply = Reply(ReplyType.TEXT, "Failed to get tiktok videos")
+        reply = Reply(ReplyType.TEXT, "Failed to get porn videos")
         try:
+            header = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+                'X-User-Token': '73e93643d4724af0a2c5abe6eff4f562',
+                'X-User-Id': '22677860'
+            }
             response = requests.get(
-                "https://tucdn.wpon.cn/api-girl/", timeout=5, verify=False
-            )
-            if response.status_code == 200:
+                "https://hj4deca.top/api/video/node_list?pageIndex=1&type=1", headers = header
+            ).json()
+            if response['success'] == 'True':
+
+                decodeData = base64.b64decode(response['data']).decode('utf-8')
+                decodeData2 = base64.b64decode(decodeData).decode('utf-8')
+                finalData = base64.b64decode(decodeData2).decode('utf-8')
+                choiceData = json.loads(finalData)
+                choiceItem = random.choice(choiceData)
+
                 videos_url = re.findall(
                     '<video src="(.*?)" muted controls preload="auto"',
-                    response.text,
+                    choiceItem['attachment']['remoteUrl'],
                     re.S,
                 )
                 if len(videos_url) > 0:
