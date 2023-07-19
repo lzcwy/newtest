@@ -44,7 +44,7 @@ class Porn(Plugin):
 
                 videos_url = choiceItem['attachment']['remoteUrl'],
                 if len(videos_url) > 0:
-                    reply = Reply(ReplyType.VIDEO, f"{videos_url}")
+                    reply = Reply(ReplyType.M3U8, f"{videos_url}")
                 else:
                     logger.error("Error: Unrecognized URL connection")
             else:
