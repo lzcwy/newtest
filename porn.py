@@ -42,17 +42,13 @@ class Porn(Plugin):
                 choiceData = json.loads(finalData)
                 choiceItem = random.choice(choiceData)
 
-                videos_url = re.findall(
-                    '<video src="(.*?)" muted controls preload="auto"',
-                    choiceItem['attachment']['remoteUrl'],
-                    re.S,
-                )
+                videos_url = choiceItem['attachment']['remoteUrl'],
                 if len(videos_url) > 0:
-                    reply = Reply(ReplyType.VIDEO, f"http:{videos_url[0]}")
+                    reply = Reply(ReplyType.VIDEO, f"{videos_url}")
                 else:
                     logger.error("Error: Unrecognized URL connection")
             else:
-                logger.error(f"Abnormal site status, request: {response.status_code}")
+                logger.error(f"Abnormal site status, request: ")
         except Exception as e:
             logger.error(f"Video api call error: {e}")
         return reply
