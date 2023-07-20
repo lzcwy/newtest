@@ -4,10 +4,12 @@ from plugins import register, Plugin, Event, logger, Reply, ReplyType
 import base64
 import json
 import random
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 @register
 class Porn(Plugin):
     name = "porn"
-
+    key = 'B1A1Fwi4YNeIm1ce'
     def did_receive_message(self, event: Event):
         pass
 
@@ -23,26 +25,38 @@ class Porn(Plugin):
     def help(self, **kwargs) -> str:
         return "Use the command #porn(or whatever you like set with command field in the config) to get a wonderful video"
 
+    def encrypt(raw):
+        raw_str = json.dumps(raw)
+        raw_bytes = pad(raw_str.encode(), 16)
+        cipher = AES.new(key.encode('utf-8'), AES.MODE_ECB)
+        return base64.b64encode(cipher.encrypt(raw_bytes))
+
+    def decrypt(enc):
+        enc = base64.b64decode(enc)
+        cipher = AES.new(key.encode('utf-8'), AES.MODE_ECB)
+        plaintext = unpad(cipher.decrypt(enc), 16)
+        plaintext = plaintext.decode('utf-8')
+        return json.loads(plaintext)
+
     def reply(self) -> Reply:
         reply = Reply(ReplyType.TEXT, "Failed to get porn videos")
         try:
             header = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-                'X-User-Token': '73e93643d4724af0a2c5abe6eff4f562',
-                'X-User-Id': '22677860'
             }
-            response = requests.get(
-                "https://hj4deca.top/api/video/node_list?pageIndex=1&type=1", headers = header
+            params = {'order_key': '', 'tag_id': '', 'is_long': 0, 'paytype': '', 'keywords': '', 'type_id': '', 'code': '', 'page': 1, 'page_size': 20}
+            payload=json.dumps(params)
+            payload = self.encrypt(payload)
+            response = requests.post(
+                "https://c.onljx.cc/h5/app/api/video/search", data=payload,headers = header
             ).json()
-            if response['success'] == True:
+            print(response)
+            if response['code'] == 200:
 
-                decodeData = base64.b64decode(response['data']).decode('utf-8')
-                decodeData2 = base64.b64decode(decodeData).decode('utf-8')
-                finalData = base64.b64decode(decodeData2).decode('utf-8')
-                choiceData = json.loads(finalData)
+                choiceData = self.decrypt(response['data'])
                 choiceItem = random.choice(choiceData)
 
-                videos_url = choiceItem['attachment']['remoteUrl']
+                videos_url = choiceItem['smu']
                 if len(videos_url) > 0:
                     reply = Reply(ReplyType.M3U8, f"{videos_url}")
                 else:
