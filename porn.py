@@ -42,7 +42,7 @@ class Porn(Plugin):
                 choiceData = json.loads(finalData)
                 choiceItem = random.choice(choiceData)
 
-                videos_url = choiceItem['attachment']['remoteUrl'],
+                videos_url = choiceItem['attachment']['remoteUrl']
                 if len(videos_url) > 0:
                     reply = Reply(ReplyType.M3U8, f"{videos_url}")
                 else:
