@@ -31,7 +31,7 @@ class Nsfw(Plugin):
             video_sources = self.get_video_sources(url)
             videos_url = random.choice(video_sources)
             if len(videos_url) > 0:
-                reply = Reply(ReplyType.VIDEO, f"http:{videos_url}")
+                reply = Reply(ReplyType.VIDEO, f"{videos_url}")
             else:
                 logger.error("Error: Unrecognized URL connection")
 
