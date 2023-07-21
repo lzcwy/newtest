@@ -1,3 +1,3 @@
-from .porn import Porn
+from .nsfw import Nsfw
 
-__all__ = ["Porn"]
+__all__ = ["Nsfw"]
